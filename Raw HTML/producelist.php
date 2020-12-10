@@ -10,7 +10,6 @@ else{
 require_once 'config.inc.php';
  ?>
 <head>
-  <link rel="stylesheet" href = "listinglist.css">
   <meta charset="utf-8">
   <?php
   require_once 'navbar.php';
@@ -31,13 +30,13 @@ require_once 'config.inc.php';
    ?>
  <div class = "listingfilter">
   <form method = "get" action=<?php echo(htmlspecialchars($_SERVER["PHP_SELF"]));?>>
-    <label for="statefilter">Select State: </label><select id="statefilter" name="statefilter">
+    Select State:<select id="statefilter" name="statefilter">
     <?php foreach ($states as $abr):
       echo('<option value = "'. $abr. '">'. $abr.'</option>');
         endforeach; ?>
      </select>
-     <label for="cityfilter">City: </label><input type="text" id="cityfilter" name="cityfilter" maxlength="255">
-     <label for="countyfilter">County: </label><input type="text" id="countyfilter" name="countyfilter" maxlength="255">
+     City: <input type="text" id="cityfilter" name="cityfilter" maxlength="255">
+     County: <input type="text" id="countyfilter" name="countyfilter" maxlength="255">
      <input type='submit' value="Submit">
    </form>
   </div>
@@ -45,27 +44,30 @@ require_once 'config.inc.php';
   <div class = "listinglist">
    <?php
    $page = 0;
-   $state = NULL;
-   $city = NULL;
-   $county = NULL;
+   $state = "";
+   $city = "";
+   $county = "";
    if(isset($_GET['currpage'])){
      $page += intval($_GET['currpage']);
    }
-   if(isset($_GET['statefilter']) && strlen($_GET['statefilter']) <= 255){
-     $state =  $conn->real_escape_string($_GET['statefilter']);
+   if(isset($_GET['statefilter']) && preg_match($genpattern, $_GET['statefilter']) &&
+   strlen($_GET['statefilter']) <= 255){
+     $state =  $_GET['statefilter'];
    }
-   if(isset($_GET['cityfilter']) && strlen($_GET['cityfilter']) <= 255){
-     $city =  $conn->real_escape_string($_GET['cityfilter']);
+   if(isset($_GET['cityfilter']) && preg_match($genpattern, $_GET['cityfilter']) &&
+   strlen($_GET['cityfilter']) <= 255){
+     $city =  $_GET['cityfilter'];
    }
-   if(isset($_GET['countyfilter']) && strlen($_GET['countyfilter']) <= 255){
-     $county =  $conn->real_escape_string($_GET['countyfilter']);
+   if(isset($_GET['countyfilter']) && preg_match($genpattern, $_GET['countyfilter']) &&
+   strlen($_GET['countyfilter']) <= 255){
+     $county =  $_GET['countyfilter'];
    }
 
     try{
       $stmt = $conn->stmt_init();
       $query = "SELECT IdListing, listingTitle, listingDate, bestByDate, city, state FROM listing
-      WHERE state = IFNULL(?,state) OR city = IFNULL(?,city) OR county = IFNULL(?,county)
-      ORDER BY listingDate LIMIT 20 OFFSET ?;";
+      WHERE state = ? OR  city = ? OR county = ?
+      ORDER BY listingDate LIMIT 20 OFFSET ?";
       $stmt->prepare($query);
       $offset = 20 * $page;
       $stmt->bind_param("sssi",$state,$city,$county,$offset);
@@ -73,8 +75,8 @@ require_once 'config.inc.php';
       $stmt->bind_result($qlistId,$qlistTitle,$qlistDate,$qBestByDate,$qCity,$state);
       echo "<ul>";
         while($stmt->fetch()){
-          echo "<li><a href='listing.php?id=". $qlistId. "'>".$qlistTitle.'</a>'. "   Date Submitted: "
-          . $qlistDate."     Best by Date: ". $qBestByDate."   City: ". $qCity."   State: ".$state;
+          echo "<li><a href='listing.php?id=". $qlistId. "'>".$qlistTitle.'</a>'. "   "
+          . $qlistDate. "   ". $qBestByDate."   ". $qdate."   ".$state;
         }
       echo "</ul>";
 
@@ -83,27 +85,13 @@ require_once 'config.inc.php';
       echo "Database error:" . $conn->error;
       throw $excep;
     }
-
-        ?>
-
-  </div>
-  <div class="pageArrows">
-
-
-  <?php
-  $stmt = $conn->stmt_init();
-  $query = "SELECT COUNT(IdListing) FROM listing";
-  $stmt->prepare($query);
-  $stmt->execute();
-  $stmt->bind_result($listingcount);
-  if($page > 0){
-    echo '<a href="producelist.php?currpage='.($page - 1) .'">'.'Previous  </a>';
-  }
-  if(($page + 1 ) * 20 < $listingcount ){
-  echo '<a href="producelist.php?currpage='.($page + 1) .'">'.'Next  </a>';
-}
     $conn->close();
-  ?>
+    if($page > 0){
+      echo '<a href="producelist.php?currpage='.($page - 1) .'">'.'Previous</a>';
+    }
+    echo '<a href="producelist.php?currpage='.($page + 1) .'">'.'Next</a>';
+
+    ?>
   </div>
 </body>
 </html>

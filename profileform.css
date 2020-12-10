@@ -1,0 +1,43 @@
+.formholder form{
+  position: relative;
+  left:20vw;
+  background: #969696;
+  width: 100%;
+  width:50vw;
+  padding: 2rem;
+}
+.formholder input[type=text]{
+  width:100%;
+  font-size: 1.25rem;
+}
+.formholder input[type=tel]{
+  width:100%;
+  font-size: 1.25rem;
+}
+.formholder label{
+  font-size: 1.5REM;
+}
+.formholder input[type=submit]{
+  width: 10rem;
+  height: 3rem;
+  font-size: 1.5rem;
+}
+.formholder button{
+  width: 8rem;
+  height: 2.5rem;
+  font-size: 0.9rem;
+  }
+  .formholder select{
+    width: 8rem;
+    height: 2.5rem;
+    font-size: 1.5rem;
+    }
+    .formholder textarea{
+      font-size: 1.5rem;
+    }
+    .formholder input[type=date]{
+      font-size: 1.5rem;
+    }
+    .formholder input[type=number]{
+      font-size: 1.5rem;
+    }

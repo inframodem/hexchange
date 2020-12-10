@@ -13,7 +13,6 @@ require_once 'config.inc.php';
 <html>
 	<head>
 		<meta charset="utf-8">
-    <link rel="stylesheet" href = "userauth.css">
     <?php
 		require_once 'navbar.php';
 
@@ -22,14 +21,14 @@ require_once 'config.inc.php';
 		<title></title>
 	</head>
 	<body>
-    <h1>Create New User Below</h1>
-    <div class ="createUserForm">
+		<?php
+		?>
     <form method="post" action= <?php echo(htmlspecialchars($_SERVER["PHP_SELF"]));?>>
-      <label for="username">Username: </label><input type="text" id="username" name="username" maxlength="32" required><br><br>
-      <label for="password">Password: </label> <input type="password" id="password" name="password" maxlength="128" required><br><br>
-      <input type="submit" value = "Create User">
+      Username:<input type="text" id="username" name="username" maxlength="32" required><br>
+      Password: <input type="text" id="password" name="password" maxlength="128" required><br>
+      <input type="submit" value = "Submit">
     </form>
-    </div>
+
     <?php
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
       if( !empty($_POST['username']) && !empty($_POST['password'])){

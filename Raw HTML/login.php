@@ -14,7 +14,6 @@ require_once 'config.inc.php';
 <html>
 	<head>
 		<meta charset="utf-8">
-    <link rel="stylesheet" href = "userauth.css">
     <?php
 		require_once 'navbar.php';
 
@@ -23,15 +22,14 @@ require_once 'config.inc.php';
 		<title></title>
 	</head>
 	<body>
-    <div class="loginForm">
-      <br><br>
+    <div>
       <form method="post" action= <?php echo(htmlspecialchars($_SERVER["PHP_SELF"]));?>>
-        <label for="username">Username: </label><input type="text" id="username" name="username" maxlength="32" required><br><br>
-        <label for="password">Password: <input type="password" id="password" name="password" maxlength="128" required><br><br>
-        <input type="submit" value = "Log in"><br>
+        Username:<input type="text" id="username" name="username" maxlength="32" required><br>
+        Password:<input type="text" id="password" name="password" maxlength="128" required><br>
+        <input type="submit" value = "Submit">
       </form>
-      <a href="createuser.php"> Create User</a><br>
-
+      <a href="createuser.php"> Create User</a>
+    </div>
     <?php
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
       if(!empty($_POST['username']) && !empty($_POST['password'])){
@@ -41,7 +39,7 @@ require_once 'config.inc.php';
           $userpattern = "/^[a-zA-Z0-9!#]+$/";
           $passpattern = "/^[a-zA-Z0-9!#]+$ /";
           if((strlen($username) < 32 && strlen($password) < 128)){
-
+            echo $username;
             $passhash = password_hash($password, PASSWORD_DEFAULT);
             $query = "SELECT EXISTS(SELECT * FROM users WHERE userName = ?)";
             $stmt = $conn->stmt_init();
@@ -54,6 +52,7 @@ require_once 'config.inc.php';
               $stmt->bind_result($userexists);
               $stmt->fetch();
               if($userexists){
+                echo "true";
                 $query = "SELECT idUsers,passHash FROM users WHERE userName = ?";
                 $stmt = $conn->stmt_init();
                 if(!$stmt->prepare($query)){
@@ -72,28 +71,28 @@ require_once 'config.inc.php';
                     header("Location: http://".$_SERVER['HTTP_HOST']."/index.php");
                   }
                   else{
-                    echo "<p>Incorrect User or Password</p>";
+                    echo "Incorrect User or Password";
                   }
 
                 }
 
           }
           else{
-            echo "<p>Password or Username is Invalid</p>";
+            echo "Password or Username is Invalid";
           }
        }
 
     }
     else{
-      echo "<p>Password or Username is Invalid</p>";
+      echo "Password or Username is Invalid";
     }
   }
   else{
-    echo "<p>Password and Username are Required</p>";
+    echo "Password and Username are Required";
   }
 }
     $conn->close();
     ?>
-</div>
+
 	</body>
 </html>

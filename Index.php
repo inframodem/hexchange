@@ -12,24 +12,28 @@ require_once 'config.inc.php';
 <!DOCTYPE html>
 <html>
 	<head>
+		<link rel="stylesheet" href = "homepage.css">
 		<meta charset="utf-8">
 		<?php
 		require_once 'navbar.php';
-		$stmt = $conn->stmt_init();
-		$query = "SELECT email,phoneNumber,FaxNumber FROM contactinformation WHERE idContactInformation = ?";
-		$lastins = 24;
-			$stmt->prepare($query);
-			$stmt->bind_param("i",$lastins);
-			$stmt->execute();
-			$stmt->bind_result($nemail, $nphonenumber,$nfaxnumber);
-			$stmt->fetch();
-			echo "<br> ".$nemail.$nphonenumber.$nfaxnumber;
 
 		?>
-		<title></title>
+		<title>Home Page</title>
 	</head>
 	<body>
+		<div class="homepageholder">
+			<!--Credit to Julia Volk for the free stock image
+		https://www.pexels.com/photo/different-vegetables-in-pile-at-street-market-5273080/-->
+		<div class = "backdrop">
+			<div class = "homecontent">
+				<h2>Welcome to Hunger Exchange</h2>
+				<p> This is a website dedicated to helping form connections between Food
+					Banks and local farms to help feed those impoverished. <br> Make and Account and a new listing
+				 today! </p>
+			</div>
+		</div>
 
+		</div>
 
 	</body>
 </html>

@@ -1,0 +1,39 @@
+h1 {
+  padding-left: 3rem;
+  margin-bottom: 0;
+  margin-left: 2rem;
+  padding: 0;
+  font-size: 3rem;
+}
+.DescHolder{
+  outline-style: solid;
+  outline-width: 2px;
+  margin-left: 2rem;
+  width: 50vw;
+  height: 30vh;
+}
+.DescHolder span{
+white-space: pre-line;
+}
+.Specs ul{
+  list-style-type: none;
+}
+.Specs li{
+  font-size: 1.5rem;
+}
+.Produce table{
+border-collapse: collapse;
+margin: 2rem;
+width:70%;
+}
+.Produce table, th, td{
+border: 2px solid black;
+padding: 1rem;
+text-align: center;
+}
+.Produce th{
+  font-size: 1.5rem;
+}
+.Produce td{
+  font-size: 1.25rem;
+}

@@ -1,0 +1,80 @@
+.loginForm{
+  background: #c2c2c2;
+  width: 30em;
+  height: 32em;
+  position: fixed;
+  bottom: 28vh;
+  right: 40vw;
+}
+.loginForm form{
+  padding: 10em 1em;
+  width: 28em;
+
+}
+.loginForm input[type=text]{
+  width: 97%;
+  font-size: 1.3em;
+  display:inline-block;
+  padding: 0.5em 0.3em;
+}
+.loginForm input[type=password]{
+  width: 97%;
+  margin: 0.5 0;
+  font-size: 1em;
+  display:inline-block;
+  padding: 0.5em 0.3em;
+}
+.loginForm input[type=submit]{
+  width: 100%;
+  margin: 0 0;
+  font-size: 1.5em;
+}
+.loginForm a{
+  display:inline-block;
+  text-decoration: none;
+  color: black;
+}
+.loginForm p{
+  color: red;
+}
+.loginForm label{
+  font-size: 1.3em;
+}
+
+.createUserForm{
+  background: #c2c2c2;
+  width: 30em;
+  height: 30em;
+  position: relative;
+  top:  5vh;
+  left: 38vw;
+}
+.createUserForm form{
+  padding: 12em 1em;
+  width: 28em;
+
+}
+.createUserForm input[type=text]{
+  width: 97%;
+  font-size: 1.3em;
+  display:inline-block;
+  padding: 0.5em 0.3em;
+}
+.createUserForm input[type=password]{
+  width: 97%;
+  margin: 0.5 0;
+  font-size: 1.3em;
+  display:inline-block;
+  padding: 0.5em 0.3em;
+}
+.createUserForm input[type=submit]{
+  width: 100%;
+  margin: 0 0;
+  font-size: 1.5em;
+}
+.createUserForm label{
+  font-size: 1.3em;
+}
+h1 {
+  text-align: center;
+}

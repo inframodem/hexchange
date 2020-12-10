@@ -13,36 +13,33 @@ require_once 'config.inc.php';
 <html>
 <head>
   <meta charset="utf-8">
-  <link rel="stylesheet" href = "listing.css">
   <?php
-  require_once 'navbar.php';
   $listingid = "";
   if(isset($_GET["id"])){
-    $listingid = intval($_GET["id"]);
+    $listingid = $_GET["id"];
     try{
       $stmt = $conn->stmt_init();
       $query = "SELECT listingTitle FROM listing WHERE idListing = ?";
       $stmt->prepare($query);
-      $stmt->bind_param("i",$listingid);
+      $stmt->bind_param("i",intval($listing));
       $stmt->execute();
       $stmt->bind_result($listtitle);
       $stmt->fetch();
-      echo "<h1>". $listtitle. "</h1> <br>";
-      echo "<title> Listing: ". $listtitle. "</title> <br>";
     }
     catch(mysqli_sql_exception $excep){
       echo "Database error:" . $conn->error;
       throw $excep;
     }
   }
-
+  require_once 'navbar.php';
   ?>
+
+  <title><?php echo $listtitle;?></title>
 
 </head>
 <body>
 
   <div class = "DescHolder">
-    <h2>Description</h2><br>
     <?php
     $listingid = "";
     if(isset($_GET["id"])){
@@ -51,11 +48,11 @@ require_once 'config.inc.php';
         $stmt = $conn->stmt_init();
         $query = "SELECT listingDesc FROM listing WHERE idListing = ?";
         $stmt->prepare($query);
-        $stmt->bind_param("i",$listingid);
+        $stmt->bind_param("i",intval($listing));
         $stmt->execute();
         $stmt->bind_result($listdesc);
         $stmt->fetch();
-        echo "<p>".preg_replace('/\v+|\\\r\\\n/Ui','<br/>',$listdesc)."</p>";
+        echo "<p>".$listdesc."</p>";
       }
       catch(mysqli_sql_exception $excep){
         echo "Database error:" . $conn->error;
@@ -74,12 +71,11 @@ require_once 'config.inc.php';
         $stmt = $conn->stmt_init();
         $query = "SELECT listingDate,bestByDate,city,county,state FROM listing WHERE idListing = ?";
         $stmt->prepare($query);
-        $stmt->bind_param("i",$listingid);
+        $stmt->bind_param("i",intval($listing));
         $stmt->execute();
         $stmt->bind_result($listingDate,$bestByDate,$city,$county,$state);
         $stmt->fetch();
-        echo "<li> Date Submitted: ".$listingDate." &nbsp;&nbsp;&nbsp;Best by Date: ".$bestByDate.
-        " &nbsp;&nbsp;&nbsp;City: ".$city." &nbsp;&nbsp;&nbsp;County: ".$county." &nbsp;&nbsp;&nbsp;State: ".$state."</li>";
+        echo "<li>".$listingDate."   ".$bestByDate."   ".$city."   ".$county."   ".$state"</li>";
       }
       catch(mysqli_sql_exception $excep){
         echo "Database error:" . $conn->error;
@@ -89,8 +85,8 @@ require_once 'config.inc.php';
     ?>
   </ul>
   </div>
-  <div class = "Produce">
-    <table>
+  <div clas = "Produce">
+    <table style ="width:100%">
       <tr>
         <th>Produce Name</th>
         <th>Produce Type</th>
@@ -102,11 +98,11 @@ require_once 'config.inc.php';
         $listingid = $_GET["id"];
         try{
           $stmt = $conn->stmt_init();
-          $query = "SELECT p.produceName,p.produceType,p.measurementValue,p.measurementType
-          FROM produce p INNER JOIN listingproduce lp ON p.idProduce = lp.idProduce
-          INNER JOIN listing l ON lp.idListing = l.idListing WHERE l.idListing = ?";
+          $query = "SELECT p.produceName,p.produceType,p.measuremntValue,p.measurmentType
+          FROM produce p((INNER JOIN listingproduce lp ON p.idProduce = lp.idProduce)
+          INNER JOIN listing l ON lp.idListing = l.idListing) WHERE idListing = ?";
           $stmt->prepare($query);
-          $stmt->bind_param("i",$listingid);
+          $stmt->bind_param("i",intval($listing));
           $stmt->execute();
           $stmt->bind_result($produceName,$produceType,$measuremntValue,$measurmentType);
 

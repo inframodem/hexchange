@@ -1,0 +1,39 @@
+.homepageholder{
+  height: 93.4vh;
+  width: 100vw;
+  display: flex;
+}
+
+
+.backdrop{
+  background-color: white;
+  width:30vw;
+  height:50vh;
+  filter: none;
+  position: relative;
+  left: 35vw;
+  top: 20vh;
+}
+.homepageholder .backdrop .homecontent  h2{
+  text-align: center;
+  padding: 1rem;
+  font-size: 2rem;
+}
+.homepageholder .backdrop .homecontent  p{
+  text-align: center;
+  padding: 1rem;
+  font-size: 1.5rem;
+}
+.homepageholder::before {
+  content:"";
+  position: absolute;
+  left:0;
+  right:0;
+  filter:blur(3px) grayscale(60%);
+  background-image: url(homepage-stock.jpg);
+  background-position: center;
+  height: 93.4vh;
+  width: 100vw;
+  padding: 0;
+
+}

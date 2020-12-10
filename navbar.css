@@ -1,0 +1,46 @@
+head{
+  margin:0px;
+
+}
+body{
+  font-family: Arial;
+  margin: 0;
+  padding: 0;
+  background-color: ###ede7ca;
+}
+.navbar{
+  background-color: #666457;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  border-top: none;
+
+}
+.navbar a{
+  float:left;
+display: block;
+padding:0.4em 0.5em;
+text-decoration: none;
+font-size: 2em;
+color: white;
+}
+.navbar a:hover{
+background: #59574b;
+}
+.navbar p{
+  float: right;
+padding-top: 0.5em;
+padding-right: 1em;
+text-decoration: none;
+font-size: 1.25em;
+color: white;
+}
+.navbar a:active{
+  background-color:#a19d89;
+  color:black;
+}
+.select-page{
+  float:right;
+  margin-right: 5rem;
+}

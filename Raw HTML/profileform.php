@@ -13,9 +13,7 @@ require_once 'config.inc.php';
 <html>
 	<head>
 		<meta charset="utf-8">
-    <link rel="stylesheet" href="profileform.css">
     <?php
-
 		require_once 'navbar.php';
 
 
@@ -23,12 +21,11 @@ require_once 'config.inc.php';
 		<title></title>
 	</head>
 	<body>
-    <div class="formholder">
     <form method="post" id = "profileform" action= <?php echo(htmlspecialchars($_SERVER["PHP_SELF"]));?>>
-      <label for="emailedit">Email: </label><input type="text" id="emailedit" name="emailedit" maxlength="128"><br>
-      <label for="phoneedit">Phone Number: </label><input type="tel" id="phoneedit" name="phoneedit" placeholder="000-000-0000"
+      Email: <input type="text" id="emailedit" name="emailedit" maxlength="128"><br>
+      Phone Number: <input type="tel" id="phoneedit" name="phoneedit" placeholder="000-000-0000"
       pattern="[\d]{3}-[\d]{3}-[\d]{4}"><br>
-      <label for="faxedit">Fax Number: </label><input type="tel" id="faxedit" name="faxedit" placeholder="000-000-0000"
+      Fax Number: <input type="tel" id="faxedit" name="faxedit" placeholder="000-000-0000"
       pattern="[\d]{3}-[\d]{3}-[\d]{4}"><br>
 
       <script>
@@ -70,7 +67,7 @@ require_once 'config.inc.php';
       </script>
       <button type="button" id="addsocial" onclick="addsociallink()"> Add Social Media</button><br>
       <button type="button" id="removesocial" onclick="removesociallink()">Remove Social Media</button><br>
-      <textarea id="profiledesc" name="profiledesc" rows="8" cols="65" maxlength="1025"></textarea>
+      <textarea id="profiledesc" name="profiledesc" rows="8" cols="75" maxlength="1025"></textarea>
       <br><br>
       <input type="submit" value = "Submit">
     </form>
@@ -119,34 +116,32 @@ require_once 'config.inc.php';
               $stmt->bind_param("ssss",$email,$phonenumber,$faxnumber,$curruserId);
               $stmt->execute();
             }
+
             $stmt = $conn->stmt_init();
             $query = "UPDATE users u
             SET userDesc = ?
             WHERE u.idUsers = ?";
             if(!$stmt->prepare($query)){
-              echo "query failed";
+
             }
             else{
-              $stmt->bind_param("ss",$desc,$curruserId);
+              $stmt->bind_param("ss",$profiledesc,$curruserId);
               $stmt->execute();
             }
 
             $stmt = $conn->stmt_init();
             $query = "DELETE sm FROM socialmedia sm
-            INNER JOIN contactsm csm ON csm.idSocialMedia= sm.idSocialMedia
+            INNER JOIN contactsm csm ON sm.idSocialMedia = csm.idSocialMedia
             INNER JOIN contactinformation ci ON ci.idContactInformation = csm.idContactInformation
             INNER JOIN users u ON ci.idContactInformation = u.contactId
             WHERE u.idUsers = ?";
             if(!$stmt->prepare($query)){
               echo "query failed";
-              echo $conn->error;
             }
             else{
               $stmt->bind_param("s",$curruserId);
               $stmt->execute();
-              echo $conn->error;
             }
-
           }
           else{
             $stmt = $conn->stmt_init();
@@ -196,20 +191,19 @@ require_once 'config.inc.php';
           $socialArray = array();
           $soccount = 0;
           while(isset($_POST['social' . $soccount])){
-             array_push($socialArray,$_POST['social' . $soccount]);
+             $socialArray.array_push($_POST['social' . $soccount]);
              $soccount++;
           }
           $soccount = 0;
           for($i = 0;$i < count($socialArray);$i++){
-            $stmt = $conn->stmt_init();
+            $stmt->stmt_init();
             $query = "INSERT INTO socialmedia(socialMediaLink)
             VALUES (?)";
             $stmt->prepare($query);
-            $socinsert = $socialArray[$i];
-            $stmt->bind_param('s',$socinsert);
+            $stmt->bind_param($socialArray[i]);
             $stmt->execute();
+            $stmt->stmt_init();
 
-            $stmt = $conn->stmt_init();
             $query = "SELECT last_insert_id() FROM socialmedia";
             if(!$stmt->prepare($query)){
               echo "query failed";
@@ -220,25 +214,19 @@ require_once 'config.inc.php';
               $stmt->fetch();
             }
 
-            $stmt = $conn->stmt_init();
             $query = "INSERT INTO contactsm(idContactInformation, idSocialMedia)
-            SELECT u.contactId, ? FROM users u WHERE idUsers = ?";
+            SELECT u.contactId, ? FROM users u WHERE ";
             if(!$stmt->prepare($query)){
               echo "query failed";
             }
             else{
-              $stmt->bind_param('ss', $lastsmres,$curruserId);
+              $stmt->bind_param(s, $curruserId);
               $stmt->execute();
             }
           }
-          $conn->close();
-          header("Location: http://".$_SERVER['HTTP_HOST']."/profile.php");
-
-
       }
 
-
+      $conn->close();
     ?>
-  </div>
   </body>
 </html>

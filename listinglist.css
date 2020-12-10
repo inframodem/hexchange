@@ -1,0 +1,73 @@
+.listingfilter{
+  width: 100vw;
+  height: 10vh;
+  background-color: #d1d1d1;
+  display: flex;
+}
+.listingfilter form{
+  padding: 1.2rem 1rem;
+}
+.listingfilter label{
+  font-size: 1.5rem;
+}
+.listingfilter input[type = "text"]{
+  font-size: 1.3rem;
+}
+.listingfilter input[type = "submit"]{
+  font-size: 1.5rem;
+}
+.listingfilter select{
+  font-size: 1.5rem;
+}
+
+.listinglist{
+  display: flex;
+  flex-direction: column;
+
+}
+.listinglist a{
+  color: black;
+  padding-bottom: 1rem;
+  text-align: left;
+  display: block;
+  text-decoration: none;
+}
+.listinglist a:hover{
+  color: #808080;
+
+}
+.listinglist a:active{
+  color: #7375ff;
+
+}
+.listinglist ul{
+  list-style-type: none;
+  list-style-position: inside;
+  margin: 0;
+  padding: 0;
+}
+.listinglist li{
+  padding: 1rem;
+  font-size: 1.5rem;
+}
+.listinglist li:nth-child(even){
+  background-color: #c7c7c7;
+}
+.pageArrows {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.pageArrows a{
+  font-size: 2rem;
+  color:black;
+  text-decoration: none;
+}
+.pageArrows a:hover{
+  color: #808080;
+
+}
+.pageArrows a:active{
+  color: #7375ff;
+
+}
