@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 if(isset($_SESSION['LAST_ACTIVITY']) && (time()- $_SESSION['LAST_ACTIVITY'] > 7200)){
@@ -18,9 +17,9 @@ require_once 'config.inc.php';
     <?php
 		require_once 'navbar.php';
 
-
+    //form for logging in
 		?>
-		<title></title>
+		<title>Log In</title>
 	</head>
 	<body>
     <div class="loginForm">
@@ -33,13 +32,14 @@ require_once 'config.inc.php';
       <a href="createuser.php"> Create User</a><br>
 
     <?php
+    //only occurs during post
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
       if(!empty($_POST['username']) && !empty($_POST['password'])){
-      //preg_match($userpattern, $username) && preg_match($passpattern, $password) &&
           $username = $conn->real_escape_string($_POST['username']);
           $password = $conn->real_escape_string($_POST['password']);
           $userpattern = "/^[a-zA-Z0-9!#]+$/";
           $passpattern = "/^[a-zA-Z0-9!#]+$ /";
+          //makes sure everything is correct
           if((strlen($username) < 32 && strlen($password) < 128)){
 
             $passhash = password_hash($password, PASSWORD_DEFAULT);
@@ -54,6 +54,7 @@ require_once 'config.inc.php';
               $stmt->bind_result($userexists);
               $stmt->fetch();
               if($userexists){
+                //checks if passhash matches passhash in db
                 $query = "SELECT idUsers,passHash FROM users WHERE userName = ?";
                 $stmt = $conn->stmt_init();
                 if(!$stmt->prepare($query)){
@@ -65,11 +66,16 @@ require_once 'config.inc.php';
                   $stmt->bind_result($quserId,$qpass);
                   $stmt->fetch();
                   if(password_verify($password,$qpass)){
+                    //stores session variables for username and password
                     $_SESSION['userId'] = $quserId;
                     $_SESSION['username'] = $username;
                     $conn->close();
                     sleep(3);
-                    header("Location: http://".$_SERVER['HTTP_HOST']."/index.php");
+                    //redirect to profile
+                    echo "<script type='text/javascript'>
+          	    window.location.href = 'http://".$_SERVER['HTTP_HOST']."/alexp15/profile.php';
+                    </script>";
+
                   }
                   else{
                     echo "<p>Incorrect User or Password</p>";

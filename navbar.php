@@ -1,6 +1,6 @@
 <link rel="stylesheet" href = "navbar.css">
 <div class = "navbar">
-  <a href="index.php">Hunger Exchange</a>
+  <a href="Index.php">Hunger Exchange</a>
   <div class="select-page">
     <a href="producelist.php">Listings</a>
     <a href="profile.php">My Profile</a>

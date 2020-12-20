@@ -16,10 +16,9 @@ require_once 'config.inc.php';
     <link rel="stylesheet" href = "userauth.css">
     <?php
 		require_once 'navbar.php';
-
-
+    //basic elements including form elements
 		?>
-		<title></title>
+		<title>Create New User</title>
 	</head>
 	<body>
     <h1>Create New User Below</h1>
@@ -31,16 +30,19 @@ require_once 'config.inc.php';
     </form>
     </div>
     <?php
+    //only does after a post has occured
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
       if( !empty($_POST['username']) && !empty($_POST['password'])){
+        //retreve username and password
           $username = $_POST['username'];
           $password = $_POST['password'];
           $userpattern = "/[a-zA-Z0-9!#]+/";
           $passpattern = "/[a-zA-Z0-9!#]+/";
+          //makes sure both username name and password qualifies
           if(preg_match($userpattern, $username) && preg_match($passpattern, $password) &&
           (strlen($username) < 32 && strlen($password) < 128)){
             $passhash = password_hash($password, PASSWORD_DEFAULT);
-            //query user
+            //query user for if user name already exists
             $query = "SELECT EXISTS(SELECT * FROM users WHERE userName = ?)";
             $stmt = $conn->stmt_init();
             if(!$stmt->prepare($query)){
@@ -52,6 +54,7 @@ require_once 'config.inc.php';
               $stmt->bind_result($userexists);
               $stmt->fetch();
               if(!$userexists){
+                //create new user
                 $query = "INSERT INTO users(idUsers, userName, passHash) VALUES(uuid(),?,?)";
                 if(!$stmt->prepare($query)){
                   echo "query failed";
@@ -60,6 +63,7 @@ require_once 'config.inc.php';
                   $stmt->bind_param("ss",$username,$passhash);
                   $stmt->execute();
                   echo "User Created!";
+                  //create username and uuid session variables
                   $query = "SELECT idUsers FROM users WHERE userName = ?";
                   $stmt->prepare($query);
                   $stmt->bind_param("s",$username);
@@ -69,7 +73,11 @@ require_once 'config.inc.php';
                   $_SESSION["username"] = $username;
                   $conn->close();
                   sleep(3);
-                  header("Location: http://".$_SERVER['HTTP_HOST']."/index.php");
+                  //redirect to profile page
+                  echo "<script type='text/javascript'>
+          	    window.location.href = 'http://".$_SERVER['HTTP_HOST']."/alexp15/profile.php';
+                    </script>";
+
                 }
 
               }

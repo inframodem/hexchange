@@ -7,12 +7,6 @@ if(isset($_SESSION['LAST_ACTIVITY']) && (time()- $_SESSION['LAST_ACTIVITY'] > 72
 else{
   $_SESSION['LAST_ACTIVITY'] = time();
 }
-if(!isset($_SESSION["userId"])){
-  echo "<script type='text/javascript'>
-  window.location.href = 'http://".$_SERVER['HTTP_HOST']."/alexp15/login.php';
-  </script>";
-
-}
 require_once 'config.inc.php';
 ?>
 <!DOCTYPE html>
@@ -21,16 +15,15 @@ require_once 'config.inc.php';
   <meta charset="utf-8">
 <link rel="stylesheet" href = "profile.css">
   <?php
-  //gets username and type for page title
   require_once 'navbar.php';
   $curruserId = "";
-  if(isset($_SESSION["userId"])){
-    $curruserId = $_SESSION["userId"];
+  if(isset($_GET["userpage"])){
+    $curruserName = $_GET["userpage"];
     try{
       $stmt = $conn->stmt_init();
-      $query = "SELECT userName, userType FROM users WHERE idUsers = ?";
+      $query = "SELECT userName,userType FROM users WHERE userName = ?";
       $stmt->prepare($query);
-      $stmt->bind_param("s",$curruserId);
+      $stmt->bind_param("s",$curruserName);
       $stmt->execute();
       $stmt->bind_result($usertitle,$usertype);
       $stmt->fetch();
@@ -38,7 +31,7 @@ require_once 'config.inc.php';
        if($usertype == 1){
 	$usertypename = "Food Bank";
 	}
-      echo"<br><title> Profile: ".$usertitle."</title><br>";
+      echo"<br><title> Profile: ".$usertitle. "</title><br>";
     }
     catch(mysqli_sql_exception $excep){
       echo "Database error:" . $conn->error;
@@ -56,14 +49,14 @@ require_once 'config.inc.php';
   <div class = "leftholder">
     <div class = "imageholder">
       <?php
-      //show image for profile from path in db
-      if(isset($_SESSION["userId"])){
+      if(isset($_GET["userpage"])){
+        $curruserName = $_GET["userpage"];
         $stmt = $conn->stmt_init();
         $query = "SELECT pImage
         FROM users
-        WHERE idUsers = ?";
+        WHERE userName = ?";
         $stmt->prepare($query);
-        $stmt->bind_param("s",$curruserId);
+        $stmt->bind_param("s",$curruserName);
         $stmt->execute();
         $stmt->bind_result($pimage);
         $stmt->fetch();
@@ -76,16 +69,15 @@ require_once 'config.inc.php';
       <ul>
       <?php
       $curruserId = "";
-      if(isset($_SESSION["userId"])){
-        $curruserId = $_SESSION["userId"];
+      if(isset($_GET["userpage"])){
+        $curruserName = $_GET["userpage"];
         try{
-          //get contact information
           $stmt = $conn->stmt_init();
           $query = "SELECT ci.email,ci.phoneNumber,ci.FaxNumber FROM contactinformation ci
           INNER JOIN users u ON u.contactId = ci.idContactInformation
-          WHERE idUsers = ?";
+          WHERE userName = ?";
           $stmt->prepare($query);
-          $stmt->bind_param("s",$curruserId);
+          $stmt->bind_param("s",$curruserName);
           $stmt->execute();
           $stmt->bind_result($email,$phonenumber,$Fax);
           $stmt->fetch();
@@ -102,21 +94,19 @@ require_once 'config.inc.php';
     <div class = "SocialMedialist">
       <ul>
         <?php
-        if(isset($_SESSION["userId"])){
-          $curruserId = $_SESSION["userId"];
+        if(isset($_GET["userpage"])){
+          $curruserName = $_GET["userpage"];
           try{
-            //get social media links and names
             $stmt = $conn->stmt_init();
             $query = "SELECT sm.socialMediaLink,sm.socialMediaName
             FROM socialmedia sm
             INNER JOIN contactsm csm ON csm.idSocialMedia = sm.idSocialMedia
             INNER JOIN contactinformation ci ON csm.idContactInformation = ci.idContactInformation
-            INNER JOIN users u ON u.contactId = ci.idContactInformation WHERE u.idUsers = ?";
+            INNER JOIN users u ON u.contactId = ci.idContactInformation WHERE u.userName = ?";
             $stmt->prepare($query);
-            $stmt->bind_param("s",$curruserId);
+            $stmt->bind_param("s",$curruserName);
             $stmt->execute();
             $stmt->bind_result($socialMediaLink, $socialMediaName);
-            //add all links to a list
             while($stmt->fetch()){
               echo "<li>";
               echo '<a href="'.$socialMediaLink.'"> Social Media Link: '.$socialMediaName.'</a>';
@@ -128,33 +118,29 @@ require_once 'config.inc.php';
             throw $excep;
           }
         }
-        //profile edit button to profile form
         ?>
 
       </ul>
-      <a href="profileform.php"> Edit Profile</a><br><br>
     </div>
   </div>
   <div class = "rightholder">
   <div class = "UserDescHolder">
     <?php
-    //get profile description
     echo"<br><h1>".$usertitle."'s Profile<br>". $usertypename. "</h1>";
-    $curruserId = "";
-    if(isset($_SESSION["userId"])){
-      $curruserId = $_SESSION["userId"];
+    if(isset($_GET["userpage"])){
+      $curruserName  = $_GET["userpage"];
       try{
         $stmt = $conn->stmt_init();
-        $query = "SELECT userDesc FROM users WHERE idUsers = ?";
+        $query = "SELECT userDesc FROM users WHERE userName = ?";
         $stmt->prepare($query);
-        $stmt->bind_param("s",$curruserId);
+        $stmt->bind_param("s",$curruserName);
         $stmt->execute();
         $stmt->bind_result($userdesc);
         $stmt->fetch();
-        //add newlines and remove slashes
-	$descbetter = preg_replace('/\v+|\\\r\\\n/Ui','<br/>',$userdesc);
+        $descbetter = preg_replace('/\v+|\\\r\\\n/Ui','<br/>',$userdesc);
 	$descbetter = stripslashes($descbetter);
         echo "<p>".$descbetter."</p>";
+
       }
       catch(mysqli_sql_exception $excep){
         echo "Database error:" . $conn->error;
@@ -169,19 +155,18 @@ require_once 'config.inc.php';
 <div class = "UserProducelist">
 
   <ul>
-    <a href="listingform.php"> Create New Listing</a><br>
     <?php
-    if(isset($_SESSION["userId"])){
-      $curruserId = $_SESSION["userId"];
+    if(isset($_GET["userpage"])){
+      $curruserName = $_GET["userpage"];
       $stmt = $conn->stmt_init();
-      //get basic listing information
       try{
         $query = "SELECT l.idListing, l.listingTitle, l.listingDate, l.bestByDate, l.city, l.state
         FROM listing l INNER JOIN listinguser ul ON ul.idListing = l.idListing
-        WHERE ul.idUsers = ?
-        ORDER BY l.listingDate DESC";
+        INNER JOIN users u ON ul.idUsers = u.idUsers
+        WHERE u.userName = ?
+        ORDER BY l.listingDate";
         $stmt->prepare($query);
-        $stmt->bind_param("s",$curruserId);
+        $stmt->bind_param("s",$curruserName);
         $stmt->execute();
         $stmt->bind_result($qlistId,$qlistTitle,$qlistDate,$qBestByDate,$qCity,$qstate);
         echo "<ul>";
@@ -189,7 +174,7 @@ require_once 'config.inc.php';
           while($stmt->fetch()){
             echo "<li><a href='listing.php?id=". $qlistId. "'>".$qlistTitle.'</a>'. "   Date Submitted: "
             . $qlistDate." &nbsp;&nbsp;&nbsp;Best by Date: ". $qBestByDate." &nbsp;&nbsp;&nbsp;City: ". $qCity." &nbsp;&nbsp;&nbsp;State: ".$qstate."
-            <div class = 'deletebutton'><a href='deletelisting.php?deletebutton=". $qlistId. "'>   Delete</a></div></li>";
+            <div class = 'deletebutton'></div></li>";
 
             $listcount++;
           }

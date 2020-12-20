@@ -1,5 +1,6 @@
 <?php
 session_start();
+//session time out this is on all pages
 if(isset($_SESSION['LAST_ACTIVITY']) && (time()- $_SESSION['LAST_ACTIVITY'] > 7200)){
   session_unset();
   session_destroy();
@@ -28,7 +29,7 @@ require_once 'config.inc.php';
 			<div class = "homecontent">
 				<h2>Welcome to Hunger Exchange</h2>
 				<p> This is a website dedicated to helping form connections between Food
-					Banks and local farms to help feed those impoverished. <br> Make and Account and a new listing
+					Banks and local farms to help feed those impoverished. <br> Make an Account and a new listing
 				 today! </p>
 			</div>
 		</div>

@@ -1,7 +1,10 @@
+<?php
+session_start();
+?>
 <html>
 <body>
 <?php
-session_start();
+//sunset and remove session
 if(isset($_SESSION['LAST_ACTIVITY']) && (time()- $_SESSION['LAST_ACTIVITY'] > 7200)){
   session_unset();
   session_destroy();
@@ -9,14 +12,18 @@ if(isset($_SESSION['LAST_ACTIVITY']) && (time()- $_SESSION['LAST_ACTIVITY'] > 72
 else{
   $_SESSION['LAST_ACTIVITY'] = time();
 }
+//checks if session is set
 if(!isset($_SESSION["userId"])){
-  header("Location: http://".$_SERVER['HTTP_HOST']."/login.php");
+  echo "<script type='text/javascript'>
+  window.location.href = 'http://".$_SERVER['HTTP_HOST']."/alexp15/profile.php';
+  </script>";
+
 }
 
 require_once "config.inc.php";
 echo $conn->real_escape_string($_SESSION["userId"]);
 if(isset($_SESSION["userId"]) && isset($_GET['deletebutton'])){
-
+//deletes all information regarding a listing from a db
     $listingnum = intval($_GET['deletebutton']);
     $curruserId = $_SESSION["userId"];
     $stmt = $conn->stmt_init();
@@ -33,8 +40,11 @@ if(isset($_SESSION["userId"]) && isset($_GET['deletebutton'])){
       $stmt->execute();
     }
   }
+  //redirects to profile
     $conn->close();
-    header("Location: http://".$_SERVER['HTTP_HOST']."/profile.php");
+    echo "<script type='text/javascript'>
+  window.location.href = 'http://".$_SERVER['HTTP_HOST']."/alexp15/profile.php';
+  </script>";
 
   ?>
 </body>

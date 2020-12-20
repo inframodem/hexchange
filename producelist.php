@@ -20,14 +20,14 @@ require_once 'config.inc.php';
 </head>
 <body>
   <?php
-
-    $states = array('AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC',
+//states array
+    $states = array('','AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC',
   'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'MA', 'MI',
   'MN', 'MS', 'MO', 'MT', 'NM', 'NY', 'NC', 'ND', 'OH','OK', 'OR', 'PA',
   'RI', 'SC', 'SD', 'TN', 'TX', 'UT','VT','VA','WA','WV','WI', 'WY', 'PR');
   $genpattern = "[a-zA-Z0-9!#\$%\&'\(\)\*\+,-\./:;<=>\?@\[\\\]\^_`{\|}~\"\s]";
 
-
+//form for the filtering bar
    ?>
  <div class = "listingfilter">
   <form method = "get" action=<?php echo(htmlspecialchars($_SERVER["PHP_SELF"]));?>>
@@ -60,15 +60,16 @@ require_once 'config.inc.php';
    if(isset($_GET['countyfilter']) && strlen($_GET['countyfilter']) <= 255){
      $county =  $conn->real_escape_string($_GET['countyfilter']);
    }
-
+//gets listings based off of whats input as filters sorted by newest on inet_ntop
+//if a field is blank it displays all of that field
     try{
       $stmt = $conn->stmt_init();
-      $query = "SELECT IdListing, listingTitle, listingDate, bestByDate, city, state FROM listing
-      WHERE state = IFNULL(?,state) OR city = IFNULL(?,city) OR county = IFNULL(?,county)
-      ORDER BY listingDate LIMIT 20 OFFSET ?;";
+      $query = "SELECT IdListing, listingTitle, listingDate, bestByDate, city, state FROM
+	listing WHERE ((state like ?) or (? is null) or (? ='')) AND ((city like ?) or
+	(? is null) or (? ='')) AND ((county like ?) or (? is null) or (? ='')) ORDER BY listingDate DESC LIMIT 20 OFFSET ?";
       $stmt->prepare($query);
       $offset = 20 * $page;
-      $stmt->bind_param("sssi",$state,$city,$county,$offset);
+      $stmt->bind_param("sssssssssi",$state,$state,$state,$city,$city,$city,$county,$county,$county,$offset);
       $stmt->execute();
       $stmt->bind_result($qlistId,$qlistTitle,$qlistDate,$qBestByDate,$qCity,$state);
       echo "<ul>";
@@ -91,6 +92,7 @@ require_once 'config.inc.php';
 
 
   <?php
+  //adds page arrows if listings exceed the 20 limit
   $stmt = $conn->stmt_init();
   $query = "SELECT COUNT(IdListing) FROM listing";
   $stmt->prepare($query);
